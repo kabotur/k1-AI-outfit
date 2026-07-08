@@ -1,0 +1,1124 @@
+```bash
+# 项目结构
+k1-life-assistant/
+├── README.md
+├── LICENSE
+├── .gitignore
+├── requirements.txt
+├── setup.py
+├── pyproject.toml
+├── src/
+│   └── k1_assistant/
+│       ├── __init__.py
+│       ├── main.py
+│       ├── camera.py
+│       ├── voice.py
+│       ├── tts.py
+│       ├── classifier.py
+│       ├── vision.py
+│       ├── config.py
+│       └── utils.py
+├── examples/
+│   └── demo.py
+├── scripts/
+│   └── install_deps.sh
+└── tests/
+    └── test_utils.py
+```
+
+## 1. README.md
+
+```markdown
+# K1 Life Assistant - 端侧 AI 视觉生活助手
+
+[![Python](https://img.shields.io/badge/Python-3.10%2B-blue)](https://www.python.org/)
+[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+[![Platform](https://img.shields.io/badge/Platform-K1%20Bianbu%20OS-orange)](https://www.spacemit.com/)
+
+基于 K1 端侧 NPU 的视觉生活小助手，支持实时摄像头预览、穿搭评价和语音交互。
+
+## ✨ 功能特性
+
+- 📷 **实时摄像头预览** - HDMI/桌面窗口显示 USB 摄像头画面
+- 👔 **智能穿搭评价** - 基于颜色分析和可选 ONNX/NPU 模型
+- 🎤 **语音交互** - 支持 SenseVoice ASR + spacemit_tts 语音合成
+- ⌨️ **键盘控制** - `O` 触发穿搭评价，`Q/ESC` 退出
+- 🧠 **本地问答** - 无需联网，内置规则引擎回答常见问题
+- 🔌 **可扩展** - 支持接入外部 NPU 推理程序或 ONNX 模型
+
+## 🖥️ 运行环境
+
+- K1 Bianbu OS (Ubuntu/Debian 衍生)
+- Python 3.10+
+- USB 摄像头
+- 麦克风 (可选，用于语音触发)
+
+## 🚀 快速开始
+
+### 安装依赖
+
+```bash
+# 系统依赖
+sudo apt update
+sudo apt install -y python3-opencv python3-numpy python3-pyaudio \
+    espeak-ng alsa-utils pulseaudio-utils python3-spacemit-ort
+
+# Python 依赖
+pip install -r requirements.txt
+```
+
+### 运行
+
+```bash
+# 基本运行
+python -m k1_assistant.main
+
+# 指定摄像头
+CAMERA_INDEX=0 python -m k1_assistant.main
+
+# 关闭语音
+ENABLE_VOICE=0 python -m k1_assistant.main
+
+# 无窗口模式 (适合 SSH)
+SHOW_WINDOW=0 python -m k1_assistant.main
+```
+
+## ⌨️ 操作说明
+
+| 按键 | 功能 |
+|------|------|
+| `O` | 触发穿搭评价 |
+| `Q` / `ESC` | 退出程序 |
+
+### 语音口令
+
+- "帮我看看穿搭" / "评价一下搭配"
+- "蓝色的衣服在哪" / "红色衣服在哪"
+- "颜色评分标准" / "配色标准"
+- "退出" / "再见"
+
+## 🔧 配置选项
+
+通过环境变量配置：
+
+| 变量 | 说明 | 默认值 |
+|------|------|--------|
+| `CAMERA_INDEX` | 摄像头索引 | 自动扫描 |
+| `ENABLE_VOICE` | 启用语音 | `1` |
+| `ENABLE_TTS` | 启用语音播报 | `1` |
+| `SHOW_WINDOW` | 显示摄像头窗口 | `1` |
+| `FRAME_WIDTH` | 摄像头宽度 | `1280` |
+| `FRAME_HEIGHT` | 摄像头高度 | `720` |
+| `OUTFIT_MODEL` | ONNX 模型路径 | 无 |
+| `OUTFIT_INFER_CMD` | 外部推理命令 | 无 |
+| `SENSEVOICE_MODEL_DIR` | ASR 模型目录 | 自动检测 |
+
+### 接入外部 NPU 模型
+
+```bash
+export OUTFIT_INFER_CMD="/path/to/npu_infer"
+export OUTFIT_LABELS="/path/to/labels.txt"
+```
+
+外部程序需输出 JSON:
+```json
+{"label": "搭配优秀", "confidence": 0.92}
+```
+
+## 📁 项目结构
+
+```
+src/k1_assistant/
+├── __init__.py      # 包入口
+├── main.py          # 主程序
+├── camera.py        # 摄像头管理
+├── voice.py         # 语音识别
+├── tts.py           # 语音合成
+├── classifier.py    # 穿搭分类器
+├── vision.py        # 视觉分析
+├── config.py        # 配置管理
+└── utils.py         # 工具函数
+```
+
+## 📄 许可证
+
+MIT License - 详见 [LICENSE](LICENSE)
+
+## 🤝 贡献
+
+欢迎提交 Issue 和 Pull Request！
+
+1. Fork 本仓库
+2. 创建特性分支 (`git checkout -b feature/amazing`)
+3. 提交更改 (`git commit -m 'Add amazing feature'`)
+4. 推送到分支 (`git push origin feature/amazing`)
+5. 提交 Pull Request
+```
+
+## 2. LICENSE (MIT)
+
+```text
+MIT License
+
+Copyright (c) 2026 K1 Life Assistant Contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+## 3. .gitignore
+
+```gitignore
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Project specific
+captures/
+*.wav
+*.mp3
+*.jpg
+*.png
+*.log
+*.onnx
+*.pb
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Model files
+models/
+*.bin
+*.safetensors
+```
+
+## 4. requirements.txt
+
+```txt
+# Core dependencies
+opencv-python>=4.8.0
+numpy>=1.24.0
+
+# Voice (optional)
+pyaudio>=0.2.11
+wave>=0.0.2
+
+# TTS (optional)
+# spacemit-tts - K1 NPU TTS (install separately)
+
+# ASR (optional)
+# sensevoice - K1 NPU ASR (install separately)
+
+# Development
+pytest>=7.0.0
+black>=23.0.0
+ruff>=0.0.275
+```
+
+## 5. pyproject.toml
+
+```toml
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "k1-life-assistant"
+version = "0.1.0"
+description = "K1 端侧 AI 视觉生活小助手"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Contributors", email = ""}
+]
+keywords = ["AI", "vision", "assistant", "K1", "NPU"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+requires-python = ">=3.10"
+dependencies = [
+    "opencv-python>=4.8.0",
+    "numpy>=1.24.0",
+]
+
+[project.optional-dependencies]
+voice = [
+    "pyaudio>=0.2.11",
+]
+dev = [
+    "pytest>=7.0.0",
+    "black>=23.0.0",
+    "ruff>=0.0.275",
+]
+
+[project.scripts]
+k1-assistant = "k1_assistant.main:main"
+
+[tool.black]
+line-length = 100
+target-version = ['py310']
+
+[tool.ruff]
+line-length = 100
+select = ["E", "F", "W", "I"]
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+```
+
+## 6. src/k1_assistant/__init__.py
+
+```python
+"""
+K1 端侧 AI 视觉生活小助手
+"""
+
+__version__ = "0.1.0"
+__all__ = ["main"]
+
+from .main import main
+```
+
+## 7. src/k1_assistant/config.py
+
+```python
+"""
+配置管理模块
+"""
+
+import os
+from dataclasses import dataclass, field
+from pathlib import Path
+from typing import Optional
+
+
+def _env_int(name: str, default: Optional[int] = None) -> Optional[int]:
+    value = os.environ.get(name)
+    try:
+        return int(value) if value not in (None, "") else default
+    except ValueError:
+        return default
+
+
+def _env_bool(name: str, default: bool) -> bool:
+    value = os.environ.get(name)
+    if value in (None, ""):
+        return default
+    return value not in ("0", "false", "False", "no", "No")
+
+
+@dataclass
+class CameraConfig:
+    """摄像头配置"""
+    index: int = field(default_factory=lambda: _env_int("CAMERA_INDEX", 0) or 0)
+    auto_fallback: bool = _env_bool("CAMERA_AUTO_FALLBACK", True)
+    scan_max: int = max(0, _env_int("CAMERA_SCAN_MAX", 6) or 0)
+    read_retries: int = max(1, _env_int("CAMERA_READ_RETRIES", 5) or 5)
+    reconnect_failures: int = max(1, _env_int("CAMERA_RECONNECT_FAILURES", 8) or 8)
+    reconnect_seconds: float = max(0.1, float(os.environ.get("CAMERA_RECONNECT_SECONDS", "1.0")))
+    width: int = int(os.environ.get("FRAME_WIDTH", "1280"))
+    height: int = int(os.environ.get("FRAME_HEIGHT", "720"))
+    startup: bool = _env_bool("CAMERA_STARTUP", True)
+    close_after_action: bool = _env_bool("CAMERA_CLOSE_AFTER_ACTION", False)
+
+
+@dataclass
+class VoiceConfig:
+    """语音配置"""
+    enabled: bool = os.environ.get("ENABLE_VOICE", "1") not in ("0", "false", "False")
+    asr_enabled: bool = os.environ.get("ENABLE_ASR", "1") not in ("0", "false", "False")
+    rms_threshold: int = int(os.environ.get("VOICE_RMS_THRESHOLD", "120"))
+    command_seconds: float = float(os.environ.get("VOICE_COMMAND_SECONDS", "3.0"))
+    cooldown_seconds: float = float(os.environ.get("VOICE_COOLDOWN_SECONDS", "4.0"))
+    sample_rate: int = max(8000, _env_int("VOICE_SAMPLE_RATE", 48000) or 48000)
+    mic_index: Optional[int] = _env_int("MIC_INDEX", 4)
+    debug: bool = _env_bool("VOICE_DEBUG", True)
+    pause_after_tts: float = float(os.environ.get("VOICE_PAUSE_AFTER_TTS", "6.0"))
+    self_echo_seconds: float = float(os.environ.get("VOICE_SELF_ECHO_SECONDS", "25.0"))
+    fallback_action: str = os.environ.get("VOICE_FALLBACK_ACTION", "").strip().lower()
+
+
+@dataclass
+class TTSConfig:
+    """TTS 配置"""
+    enabled: bool = _env_bool("ENABLE_TTS", True)
+    engine: str = os.environ.get("TTS_ENGINE", "auto").strip().lower()
+    language: str = os.environ.get("TTS_LANGUAGE", "zh").strip() or "zh"
+    stream_chunks: bool = _env_bool("TTS_STREAM_CHUNKS", True)
+    chunk_chars: int = max(1, int(os.environ.get("TTS_CHUNK_CHARS", "18")))
+    say_startup: bool = _env_bool("SAY_STARTUP", False)
+
+
+@dataclass
+class DisplayConfig:
+    """显示配置"""
+    show_window: bool = _env_bool("SHOW_WINDOW", True)
+    window_name: str = os.environ.get("WINDOW_NAME", "K1 Life Assistant")
+    result_hold_seconds: float = float(os.environ.get("RESULT_HOLD_SECONDS", "5"))
+    action_preview_seconds: float = max(0.0, float(os.environ.get("ACTION_PREVIEW_SECONDS", "2.0")))
+
+
+@dataclass
+class ModelConfig:
+    """模型配置"""
+    outfit_model: str = os.environ.get("OUTFIT_MODEL", "").strip()
+    outfit_infer_cmd: str = os.environ.get("OUTFIT_INFER_CMD", "").strip()
+    outfit_labels: str = os.environ.get("OUTFIT_LABELS", "").strip()
+    sensevoice_model_dir: str = _get_model_dir()
+
+
+def _get_model_dir() -> str:
+    """获取 SenseVoice 模型目录"""
+    env_dir = os.environ.get("SENSEVOICE_MODEL_DIR")
+    if env_dir:
+        return env_dir
+    candidates = [
+        "/usr/share/spacemit-asr/sensevoice",
+        "~/.cache/models/asr/sensevoice",
+        "~/.cache/sensevoice",
+    ]
+    for path in candidates:
+        expanded = os.path.expanduser(path)
+        if expanded and Path(expanded).is_dir():
+            return expanded
+    return os.path.expanduser(candidates[0]) if candidates else ""
+
+
+@dataclass
+class AppConfig:
+    """应用总配置"""
+    camera: CameraConfig = field(default_factory=CameraConfig)
+    voice: VoiceConfig = field(default_factory=VoiceConfig)
+    tts: TTSConfig = field(default_factory=TTSConfig)
+    display: DisplayConfig = field(default_factory=DisplayConfig)
+    model: ModelConfig = field(default_factory=ModelConfig)
+
+    @classmethod
+    def load(cls) -> "AppConfig":
+        return cls()
+```
+
+## 8. src/k1_assistant/utils.py
+
+```python
+"""
+工具函数模块
+"""
+
+import json
+import math
+import os
+import re
+import shlex
+import shutil
+import subprocess
+import tempfile
+import time
+from pathlib import Path
+from typing import Optional
+
+
+def have(cmd: str) -> bool:
+    """检查命令是否存在"""
+    return shutil.which(cmd) is not None
+
+
+def is_float(value: str) -> bool:
+    """检查字符串是否为浮点数"""
+    try:
+        float(value)
+        return True
+    except ValueError:
+        return False
+
+
+def softmax(values) -> list:
+    """Softmax 计算"""
+    import numpy as np
+    values = values - np.max(values)
+    exp_values = np.exp(values)
+    return exp_values / np.sum(exp_values)
+
+
+def display_available() -> bool:
+    """检查显示是否可用"""
+    if os.name == "nt":
+        return True
+    if os.environ.get("WAYLAND_DISPLAY"):
+        return True
+    display = os.environ.get("DISPLAY")
+    if not display:
+        return False
+    probes = [
+        ["xdpyinfo", "-display", display],
+        ["xset", "-display", display, "q"],
+    ]
+    for probe in probes:
+        if not have(probe[0]):
+            continue
+        try:
+            proc = subprocess.run(
+                probe,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                check=False,
+                timeout=2,
+            )
+        except (OSError, subprocess.TimeoutExpired):
+            continue
+        if proc.returncode == 0:
+            return True
+    return False
+
+
+def find_chinese_font() -> Optional[str]:
+    """查找中文字体"""
+    candidates = [
+        "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",
+        "/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc",
+        "/usr/share/fonts/truetype/wqy/wqy-microhei.ttc",
+        "/usr/share/fonts/truetype/arphic/uming.ttc",
+        "C:/Windows/Fonts/msyh.ttc",
+        "C:/Windows/Fonts/simhei.ttf",
+    ]
+    for path in candidates:
+        if Path(path).exists():
+            return path
+    return None
+
+
+def ascii_overlay(text: str) -> str:
+    """将中文转换为 ASCII 显示"""
+    replacements = {
+        "搭配优秀": "OUTFIT GOOD",
+        "搭配一般": "OUTFIT OK",
+        "搭配需要调整": "OUTFIT ADJUST",
+        "穿搭评价": "OUTFIT",
+        "退出": "QUIT",
+        "待机中": "STANDBY",
+    }
+    for key, value in replacements.items():
+        text = text.replace(key, value)
+    return text.encode("ascii", errors="ignore").decode("ascii") or "K1 life assistant"
+
+
+def load_labels(path: str, default_labels: list[str]) -> list[str]:
+    """加载标签文件"""
+    if not path:
+        return default_labels
+    label_path = Path(path)
+    if not label_path.exists():
+        return default_labels
+    labels = [line.strip() for line in label_path.read_text(encoding="utf-8").splitlines()]
+    return [label for label in labels if label] or default_labels
+
+
+def compute_rms(pcm_bytes: bytes, sampwidth: int = 2) -> int:
+    """计算 RMS"""
+    if not pcm_bytes:
+        return 0
+    try:
+        import audioop
+        return int(audioop.rms(pcm_bytes, sampwidth))
+    except Exception:
+        pass
+    if len(pcm_bytes) < 2:
+        return 0
+    import struct
+    n = len(pcm_bytes) // 2
+    samples = struct.unpack(f"<{n}h", pcm_bytes[: n * 2])
+    return int(math.sqrt(sum(s * s for s in samples) / max(n, 1)))
+
+
+def save_capture(frame, prefix: str, capture_dir: Path) -> Path:
+    """保存截图"""
+    capture_dir.mkdir(parents=True, exist_ok=True)
+    path = capture_dir / f"{prefix}_{time.strftime('%Y%m%d_%H%M%S')}.jpg"
+    import cv2
+    cv2.imwrite(str(path), frame)
+    return path
+
+
+def parse_external_output(stdout: str, labels: list[str]) -> Optional[tuple[str, float]]:
+    """解析外部推理程序输出"""
+    if not stdout:
+        return None
+    try:
+        data = json.loads(stdout)
+        label = str(data.get("label", "")).strip()
+        confidence = float(data.get("confidence", 0.0))
+    except Exception:
+        parts = stdout.replace(",", " ").split()
+        label = parts[0] if parts else ""
+        confidence = float(parts[1]) if len(parts) > 1 and is_float(parts[1]) else 0.85
+    if label not in labels and labels:
+        return None
+    return label, max(0.0, min(confidence, 1.0))
+```
+
+## 9. src/k1_assistant/main.py
+
+```python
+"""
+主程序入口
+"""
+
+import sys
+import time
+from pathlib import Path
+
+from .config import AppConfig
+from .camera import CameraManager
+from .voice import VoiceTrigger
+from .tts import tts_play
+from .classifier import ClassifierHub
+from .vision import analyze_outfit_demo, draw_hud
+from .utils import display_available
+
+
+def preflight(config: AppConfig) -> bool:
+    """运行前自检"""
+    print("=" * 60)
+    print("K1 视觉生活小助手 - 自检")
+    print("=" * 60)
+
+    ok = True
+
+    # 检查 OpenCV
+    try:
+        import cv2
+        print("[ok] OpenCV 可用")
+    except ImportError:
+        print("[x] 缺少 OpenCV: sudo apt install python3-opencv")
+        ok = False
+
+    # 检查 NumPy
+    try:
+        import numpy as np
+        print("[ok] NumPy 可用")
+    except ImportError:
+        print("[x] 缺少 NumPy: sudo apt install python3-numpy")
+        ok = False
+
+    # 检查 PyAudio
+    try:
+        import pyaudio
+        print("[ok] PyAudio 可用")
+    except ImportError:
+        print("[warn] PyAudio 不可用，语音触发关闭")
+
+    # 检查显示
+    if config.display.show_window and display_available():
+        print(f"[ok] 摄像头窗口: 将显示 OpenCV 窗口 `{config.display.window_name}`")
+    elif config.display.show_window:
+        print("[warn] 图形显示不可用，SSH/串口终端不会弹出摄像头窗口")
+    else:
+        print("[warn] SHOW_WINDOW=0，摄像头窗口已关闭")
+
+    # 检查 TTS
+    from .tts import is_tts_available
+    if is_tts_available():
+        print("[ok] TTS 可用")
+    else:
+        print("[warn] TTS 不可用，只打印不播报")
+
+    print("=" * 60)
+    return ok
+
+
+def main() -> int:
+    """主函数"""
+    config = AppConfig.load()
+
+    if not preflight(config):
+        return 1
+
+    # 初始化摄像头
+    camera = CameraManager(config.camera)
+
+    # 初始化语音
+    voice = VoiceTrigger(config.voice, config.tts)
+
+    # 初始化分类器
+    classifiers = ClassifierHub(config.model)
+
+    # 启动语音
+    voice.start()
+
+    # 初始化显示
+    window_created = False
+    window_enabled = config.display.show_window and display_available()
+
+    # 状态变量
+    result = None
+    result_until = 0.0
+    message = "待机中"
+    pending_action = None
+    pending_action_started = None
+    first_frame = True
+
+    # 启动播报
+    if config.tts.say_startup:
+        tts_play("视觉生活小助手已启动。你可以问我问题，也可以让我看穿搭。", config.tts)
+    else:
+        print("[tts] 跳过启动播报")
+
+    try:
+        while True:
+            # 处理语音事件
+            event = voice.get_event()
+            if event:
+                action, text = event
+                if voice.is_exit_command(text):
+                    tts_play("好的，再见。", config.tts)
+                    break
+                if action == "qa":
+                    reply = voice.get_local_reply(text)
+                    message = f"语音问答: {text}"
+                    print(f"[qa] {text} -> {reply}")
+                    tts_play(reply, config.tts)
+                else:
+                    message = f"语音触发: {text}"
+                    pending_action = action
+                    pending_action_started = None
+
+            # 读取摄像头帧
+            frame = camera.read_frame()
+
+            # 处理待执行的视觉任务
+            if pending_action is not None and frame is not None:
+                now = time.time()
+                if pending_action_started is None:
+                    pending_action_started = now
+                    print(f"[camera] 预览 {config.display.action_preview_seconds:.1f}s 后抓拍")
+
+                if now - pending_action_started >= config.display.action_preview_seconds:
+                    # 保存截图
+                    from .utils import save_capture
+                    image_path = save_capture(frame, "outfit", Path("captures"))
+
+                    # 分类
+                    result = classifiers.classify_outfit(frame, image_path)
+                    result_until = time.time() + config.display.result_hold_seconds
+
+                    tts_play(result.speech, config.tts)
+                    pending_action = None
+                    pending_action_started = None
+
+                    if config.camera.close_after_action:
+                        camera.release()
+
+            # 超时清除结果
+            if time.time() > result_until:
+                result = None
+
+            # 绘制并显示
+            if frame is not None:
+                draw_hud(frame, result, message)
+
+            # 显示窗口
+            if window_enabled and frame is not None:
+                try:
+                    import cv2
+                    cv2.imshow(config.display.window_name, frame)
+                    key = cv2.waitKey(1) & 0xFF
+                except Exception as exc:
+                    window_enabled = False
+                    print(f"[warn] 窗口显示失败: {exc}")
+            else:
+                time.sleep(0.03)
+                key = -1
+
+            # 键盘控制
+            if key in (ord("q"), 27):
+                break
+            if key in (ord("o"), ord("O")):
+                message = "键盘触发: 帮我看看穿搭"
+                pending_action = "outfit"
+                pending_action_started = None
+
+    except KeyboardInterrupt:
+        print("\n[!] 用户中断")
+    finally:
+        voice.stop()
+        camera.release()
+        try:
+            import cv2
+            cv2.destroyAllWindows()
+        except Exception:
+            pass
+
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
+```
+
+## 10. src/k1_assistant/camera.py
+
+```python
+"""
+摄像头管理模块
+"""
+
+import time
+from pathlib import Path
+from typing import Optional, Tuple
+
+import cv2
+import numpy as np
+
+from .config import CameraConfig
+
+
+class CameraManager:
+    """摄像头管理器"""
+
+    def __init__(self, config: CameraConfig):
+        self.config = config
+        self.cap = None
+        self.index = None
+        self._read_failures = 0
+
+    def open(self) -> bool:
+        """打开摄像头"""
+        if self.cap is not None:
+            return True
+
+        indexes = self._get_candidate_indexes()
+        for idx in indexes:
+            cap = self._create_capture(idx)
+            if not cap.isOpened():
+                cap.release()
+                continue
+
+            cap.set(cv2.CAP_PROP_FRAME_WIDTH, self.config.width)
+            cap.set(cv2.CAP_PROP_FRAME_HEIGHT, self.config.height)
+
+            ok, frame = self._read_valid_frame(cap)
+            if ok and frame is not None:
+                self.cap = cap
+                self.index = idx
+                h, w = frame.shape[:2]
+                print(f"[camera] 打开成功: /dev/video{idx}, {w}x{h}")
+                return True
+
+            cap.release()
+
+        print("[camera] 打开失败: 未找到可用摄像头")
+        return False
+
+    def read_frame(self) -> Optional[np.ndarray]:
+        """读取一帧"""
+        if self.cap is None:
+            if not self.open():
+                return None
+
+        try:
+            ret, frame = self.cap.read()
+        except Exception:
+            ret, frame = False, None
+
+        if ret and frame is not None and frame.size > 0:
+            self._read_failures = 0
+            return frame
+
+        self._read_failures += 1
+        if self._read_failures >= self.config.reconnect_failures:
+            print("[camera] 读帧失败，尝试重连...")
+            self.release()
+            time.sleep(self.config.reconnect_seconds)
+            self.open()
+            self._read_failures = 0
+
+        return None
+
+    def release(self):
+        """释放摄像头"""
+        if self.cap is not None:
+            self.cap.release()
+            self.cap = None
+            self.index = None
+
+    def _create_capture(self, index: int):
+        """创建 VideoCapture"""
+        if hasattr(cv2, "CAP_V4L2"):
+            return cv2.VideoCapture(index, cv2.CAP_V4L2)
+        return cv2.VideoCapture(index)
+
+    def _read_valid_frame(self, cap, retries: int = 5) -> Tuple[bool, Optional[np.ndarray]]:
+        """读取有效帧"""
+        for _ in range(retries):
+            ok, frame = cap.read()
+            if ok and frame is not None and frame.size > 0:
+                return True, frame
+            time.sleep(0.08)
+        return False, None
+
+    def _get_candidate_indexes(self) -> list[int]:
+        """获取候选摄像头索引"""
+        if self.config.index is not None and not self.config.auto_fallback:
+            return [self.config.index]
+
+        # 扫描设备
+        indexes = set()
+        for device in Path("/dev").glob("video*"):
+            suffix = device.name.replace("video", "", 1)
+            if suffix.isdigit():
+                indexes.add(int(suffix))
+
+        # 添加上限内的索引
+        for i in range(self.config.scan_max + 1):
+            indexes.add(i)
+
+        # 优先使用配置的索引
+        sorted_indexes = sorted(indexes)
+        if self.config.index in sorted_indexes:
+            sorted_indexes.remove(self.config.index)
+            sorted_indexes.insert(0, self.config.index)
+
+        return sorted_indexes
+```
+
+## 11. src/k1_assistant/voice.py
+
+```python
+"""
+语音识别模块
+"""
+
+import queue
+import threading
+import time
+from pathlib import Path
+from typing import Optional, Tuple
+
+from .config import VoiceConfig, TTSConfig
+from .tts import tts_play
+from .utils import compute_rms
+
+
+class VoiceTrigger:
+    """语音触发"""
+
+    def __init__(self, config: VoiceConfig, tts_config: TTSConfig):
+        self.config = config
+        self.tts_config = tts_config
+        self.events: queue.Queue[Tuple[str, str]] = queue.Queue()
+        self._stop = threading.Event()
+        self._thread: Optional[threading.Thread] = None
+        self._asr_model = None
+        self._asr_unavailable = False
+
+    @property
+    def enabled(self) -> bool:
+        return self.config.enabled
+
+    def start(self):
+        if not self.enabled:
+            print("[voice] 语音触发已禁用")
+            return
+        self._thread = threading.Thread(target=self._run, daemon=True)
+        self._thread.start()
+        print("[voice] 语音触发线程已启动")
+
+    def stop(self):
+        self._stop.set()
+        if self._thread:
+            self._thread.join(timeout=1.5)
+
+    def get_event(self) -> Optional[Tuple[str, str]]:
+        try:
+            return self.events.get_nowait()
+        except queue.Empty:
+            return None
+
+    def _run(self):
+        try:
+            import pyaudio
+        except ImportError:
+            print("[voice] PyAudio 不可用")
+            return
+
+        p = pyaudio.PyAudio()
+        stream = None
+
+        try:
+            rate = self.config.sample_rate
+            chunk = 1024
+            last_trigger = 0.0
+
+            input_kwargs = {}
+            if self.config.mic_index is not None:
+                input_kwargs["input_device_index"] = self.config.mic_index
+                try:
+                    dev_name = p.get_device_info_by_index(self.config.mic_index).get("name", "?")
+                    print(f"[voice] 使用麦克风 [{self.config.mic_index}] {dev_name}")
+                except Exception:
+                    pass
+
+            stream = p.open(
+                format=pyaudio.paInt16,
+                channels=1,
+                rate=rate,
+                input=True,
+                frames_per_buffer=chunk,
+                **input_kwargs,
+            )
+
+            while not self._stop.is_set():
+                # 检查 TTS 播放中
+                if self._is_tts_playing():
+                    time.sleep(0.05)
+                    continue
+
+                data = stream.read(chunk, exception_on_overflow=False)
+                rms = compute_rms(data)
+
+                if rms < self.config.rms_threshold:
+                    continue
+
+                if time.time() - last_trigger < self.config.cooldown_seconds:
+                    continue
+
+                last_trigger = time.time()
+                print(f"[voice] 触发录音: RMS={rms}")
+
+                # 录音
+                frames = [data]
+                frame_count = int(rate / chunk * self.config.command_seconds)
+                for _ in range(frame_count):
+                    if self._stop.is_set():
+                        break
+                    frames.append(stream.read(chunk, exception_on_overflow=False))
+
+                wav_path = self._save_wav(frames, rate)
+                text = self._recognize(wav_path)
+                print(f"[voice] 识别文本: {text!r}")
+
+                action = self._route_text(text)
+                if action:
+                    self.events.put((action, text))
+
+        except Exception as exc:
+            print(f"[voice] 错误: {exc}")
+        finally:
+            if stream:
+                stream.stop_stream()
+                stream.close()
+            p.terminate()
+
+    def _is_tts_playing(self) -> bool:
+        """检查 TTS 是否正在播放"""
+        try:
+            from .tts import is_playing
+            return is_playing()
+        except Exception:
+            return False
+
+    def _save_wav(self, frames: list[bytes], rate: int) -> Path:
+        """保存 WAV 文件"""
+        import wave
+        wav_path = Path("/tmp") / "k1_voice_cmd.wav"
+        with wave.open(str(wav_path), "wb") as wf:
+            wf.setnchannels(1)
+            wf.setsampwidth(2)
+            wf.setframerate(rate)
+            wf.writeframes(b"".join(frames))
+        return wav_path
+
+    def _recognize(self, wav_path: Path) -> str:
+        """语音识别"""
+        if not self.config.asr_enabled:
+            return ""
+
+        if self._asr_unavailable:
+            return ""
+
+        # 尝试导入 SenseVoice
+        try:
+            if self._asr_model is None:
+                self._asr_model = self._load_model()
+                if self._asr_model is None:
+                    self._asr_unavailable = True
+                    return ""
+
+            result = self._asr_model.inference(str(wav_path), language="zh")
+            return self._extract_text(result)
+        except Exception as exc:
+            print(f"[voice] ASR 失败: {exc}")
+            return ""
+
+    def _load_model(self):
+        """加载 ASR 模型"""
+        model_dir = Path(self.config.sensevoice_model_dir)
+        if not model_dir.is_dir():
+            print(f"[voice] 模型目录不存在: {model_dir}")
+            return None
+
+        try:
+            from sensevoice import SenseVoiceSmall
+            return SenseVoiceSmall.from_pretrained(str(model_dir))
+        except ImportError:
+            print("[voice] 无法导入 SenseVoice
